@@ -4,7 +4,7 @@
         Title="MainWindow" Height="500" Width="640" ResizeMode="CanMinimize" Loaded="Window_Loaded">
    <Grid>
       <Border Name="CanvasBorder" BorderBrush="Black" BorderThickness="2" Margin="80,5" HorizontalAlignment="Left" VerticalAlignment="Top" Width="204" Height="444">
-         <Canvas Name="myCanvas" HorizontalAlignment="Left" Height="440" VerticalAlignment="Top" Width="200" Background="LightGray">
+         <Canvas Name="myCanvas" Focusable="True" HorizontalAlignment="Left" Height="440" VerticalAlignment="Top" Width="200" Background="LightGray">
          </Canvas>
       </Border>
    </Grid>

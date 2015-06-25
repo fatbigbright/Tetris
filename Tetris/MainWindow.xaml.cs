@@ -25,6 +25,7 @@ namespace Tetris
       private const int BLOCK_WIDTH = 20;
       private const int BLOCK_HEIGHT = 20;
       private int[,] stage = new int[MAX_LINE, MAX_COLUMN];
+
       public MainWindow()
       {
          InitializeComponent();
@@ -44,7 +45,15 @@ namespace Tetris
 
       private void Window_Loaded(object sender, RoutedEventArgs e)
       {
+         InitializeComponentCustom();
          DrawStage();
+      }
+
+      private void InitializeComponentCustom()
+      {
+         this.myCanvas.Focus();
+         this.myCanvas.KeyDown += new KeyEventHandler((obj, e) => {
+         });
       }
 
       private void DrawStage()
