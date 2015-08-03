@@ -20,53 +20,74 @@ namespace Tetris
    /// </summary>
    public partial class MainWindow : Window
    {
-      private const int MAX_LINE = 22;
-      private const int MAX_COLUMN = 10;
       private const int BLOCK_WIDTH = 20;
       private const int BLOCK_HEIGHT = 20;
-      private int[,] stage = new int[MAX_LINE, MAX_COLUMN];
+
+      private TetrisController controller = new TetrisController();
 
       public MainWindow()
       {
          InitializeComponent();
-         InitializeStage();
-      }
-
-      private void InitializeStage()
-      {
-         for (int line = 0; line < MAX_LINE; line++)
-         {
-            for (int column = 0; column < MAX_COLUMN; column++)
-            {
-               stage[line, column] = 1;
-            }
-         }
       }
 
       private void Window_Loaded(object sender, RoutedEventArgs e)
       {
          InitializeComponentCustom();
-         DrawStage();
       }
 
       private void InitializeComponentCustom()
       {
          this.myCanvas.Focus();
          this.myCanvas.KeyDown += new KeyEventHandler((obj, e) => {
+            PlayOperation operation = PlayOperation.None;
+            switch (e.Key)
+            {
+               case Key.Up:
+                  operation = PlayOperation.Change;
+                  break;
+               case Key.Down:
+                  operation = PlayOperation.Down;
+                  break;
+               case Key.Left:
+                  operation = PlayOperation.Left;
+                  break;
+               case Key.Right:
+                  operation = PlayOperation.Right;
+                  break;
+               default:
+                  break;
+            }
+            controller.GetOperation(operation);
          });
+
+         //rendering for every frame
+         CompositionTarget.Rendering += (sender, args) =>
+         {
+            DrawStage();
+         };
       }
 
       private void DrawStage()
       {
-         for (int line = 0; line < MAX_LINE; line++)
+         for (int line = 0; line < TetrisController.MAX_LINE; line++)
          {
-            for (int column = 0; column < MAX_COLUMN; column++)
+            for (int column = 0; column < TetrisController.MAX_COLUMN; column++)
             {
-               Rectangle rec = new Rectangle();
+               Rectangle rec = null;
+
+               //whether the rectangle(tile) is already existing
+               if(this.myCanvas.Children.Count > line * TetrisController.MAX_COLUMN + column)
+               {
+                  rec = this.myCanvas.Children[line * TetrisController.MAX_COLUMN + column] as Rectangle;
+               }
+               else
+               {
+                  rec = new Rectangle();
+                  this.myCanvas.Children.Insert(line * TetrisController.MAX_COLUMN + column, rec);
+               }
                rec.Width = BLOCK_WIDTH;
                rec.Height = BLOCK_HEIGHT;
-               FillRect(rec, stage[line, column]);
-               this.myCanvas.Children.Insert(line * MAX_COLUMN + column, rec);
+               FillRect(rec, controller.ReturnStageValue(line, column));
                Canvas.SetLeft(rec, column * rec.Width);
                Canvas.SetTop(rec, line * rec.Height);
             }
